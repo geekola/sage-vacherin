@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera } from '@react-three/drei';
 import { ARVideoOverlay } from './ARVideoOverlay';
@@ -9,15 +9,21 @@ interface ARSceneProps {
   isReady?: boolean;
   campaign?: any;
   showOverlay?: boolean;
+  isQRScanned?: boolean;
 }
 
 export const ARScene: React.FC<ARSceneProps> = ({ 
   isReady = true,
   campaign,
-  showOverlay = false
+  showOverlay = false,
+  isQRScanned = false
 }) => {
   const activeCampaign = campaign || useARStore((state) => state.activeCampaign);
-  const [videoVisible, setVideoVisible] = useState(showOverlay);
+  const [showVideo, setShowVideo] = useState(showOverlay || isQRScanned);
+
+  useEffect(() => {
+    setShowVideo(showOverlay || isQRScanned);
+  }, [showOverlay, isQRScanned]);
 
   if (!activeCampaign?.markerImage) return null;
 
@@ -32,17 +38,19 @@ export const ARScene: React.FC<ARSceneProps> = ({
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
         
-        {/* Base marker image */}
-        <ARMarkerImage 
-          imageUrl={activeCampaign.markerImage}
-          opacity={videoVisible ? 0.3 : 1}
-        />
+        {/* Only show marker image if video is not playing */}
+        {!showVideo && (
+          <ARMarkerImage 
+            imageUrl={activeCampaign.markerImage}
+            opacity={1}
+          />
+        )}
 
-        {/* Video overlay */}
-        {activeCampaign.videoUrl && (
+        {/* Show video when QR is scanned or overlay is enabled */}
+        {activeCampaign.videoUrl && showVideo && (
           <ARVideoOverlay
             videoUrl={activeCampaign.videoUrl}
-            isVisible={videoVisible || showOverlay}
+            isVisible={true}
           />
         )}
       </Suspense>

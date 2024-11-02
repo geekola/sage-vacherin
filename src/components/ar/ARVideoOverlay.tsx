@@ -11,7 +11,7 @@ export const ARVideoOverlay: React.FC<ARVideoOverlayProps> = ({
   videoUrl,
   isVisible
 }) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const textureRef = useRef<THREE.VideoTexture | null>(null);
   const [isReady, setIsReady] = useState(false);
   const { viewport } = useThree();
@@ -82,7 +82,7 @@ export const ARVideoOverlay: React.FC<ARVideoOverlayProps> = ({
   const height = scale / aspectRatio;
 
   return (
-    <mesh position={[0, 0, 0.1]} scale={[width, height, 1]}>
+    <mesh position={[0, 0, 0]} scale={[width, height, 1]}>
       <planeGeometry />
       <meshBasicMaterial
         map={textureRef.current}
