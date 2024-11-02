@@ -5,13 +5,11 @@ import { useFrame, useThree } from '@react-three/fiber';
 interface ARVideoOverlayProps {
   videoUrl: string;
   isVisible: boolean;
-  onPlaybackComplete?: () => void;
 }
 
 export const ARVideoOverlay: React.FC<ARVideoOverlayProps> = ({
   videoUrl,
-  isVisible,
-  onPlaybackComplete
+  isVisible
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const textureRef = useRef<THREE.VideoTexture | null>(null);
@@ -21,9 +19,8 @@ export const ARVideoOverlay: React.FC<ARVideoOverlayProps> = ({
   useEffect(() => {
     const video = document.createElement('video');
     video.crossOrigin = 'anonymous';
-    video.loop = false;
-    video.muted = true;
     video.playsInline = true;
+    video.muted = true;
     video.src = videoUrl;
     
     const texture = new THREE.VideoTexture(video);
@@ -35,20 +32,16 @@ export const ARVideoOverlay: React.FC<ARVideoOverlayProps> = ({
     textureRef.current = texture;
 
     const handleCanPlay = () => setIsReady(true);
-    const handleEnded = () => onPlaybackComplete?.();
-
     video.addEventListener('canplay', handleCanPlay);
-    video.addEventListener('ended', handleEnded);
 
     return () => {
       video.removeEventListener('canplay', handleCanPlay);
-      video.removeEventListener('ended', handleEnded);
       video.pause();
       video.src = '';
       video.load();
       texture.dispose();
     };
-  }, [videoUrl, onPlaybackComplete]);
+  }, [videoUrl]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -89,7 +82,7 @@ export const ARVideoOverlay: React.FC<ARVideoOverlayProps> = ({
   const height = scale / aspectRatio;
 
   return (
-    <mesh position={[0, 0, -0.1]} scale={[width, height, 1]}>
+    <mesh position={[0, 0, 0.1]} scale={[width, height, 1]}>
       <planeGeometry />
       <meshBasicMaterial
         map={textureRef.current}
