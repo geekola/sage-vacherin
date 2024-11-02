@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { Login } from './auth/Login';
+import { AuthForms } from './auth/AuthForms';
 
 interface AuthWrapperProps {
   children: React.ReactNode;
@@ -18,7 +18,7 @@ export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   }
 
   if (!user) {
-    return <Login />;
+    return <AuthForms />;
   }
 
   return <>{children}</>;

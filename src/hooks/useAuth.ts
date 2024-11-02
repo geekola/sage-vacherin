@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { 
   User,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  updateProfile,
   signOut as firebaseSignOut,
   onAuthStateChanged
 } from 'firebase/auth';
@@ -60,6 +63,68 @@ export function useAuth() {
     }
   };
 
+  const signUp = async (email: string, password: string, name: string) => {
+    try {
+      setError(null);
+      setAuthLoading(true);
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(user, { displayName: name });
+    } catch (error) {
+      console.error('Sign up error:', error);
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'auth/email-already-in-use':
+            setError('This email is already registered');
+            break;
+          case 'auth/invalid-email':
+            setError('Invalid email address');
+            break;
+          case 'auth/operation-not-allowed':
+            setError('Sign up is currently disabled');
+            break;
+          case 'auth/weak-password':
+            setError('Password is too weak');
+            break;
+          default:
+            setError('Failed to create account. Please try again');
+        }
+      } else {
+        setError('An unexpected error occurred');
+      }
+      return false;
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const resetPassword = async (email: string) => {
+    try {
+      setError(null);
+      setAuthLoading(true);
+      await sendPasswordResetEmail(auth, email);
+      return true;
+    } catch (error) {
+      console.error('Password reset error:', error);
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'auth/invalid-email':
+            setError('Invalid email address');
+            break;
+          case 'auth/user-not-found':
+            setError('No account found with this email');
+            break;
+          default:
+            setError('Failed to send reset email. Please try again');
+        }
+      } else {
+        setError('An unexpected error occurred');
+      }
+      return false;
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
   const signOut = async () => {
     try {
       setError(null);
@@ -78,7 +143,9 @@ export function useAuth() {
     loading,
     error,
     signIn,
+    signUp,
     signOut,
+    resetPassword,
     loading: authLoading
   };
 }
