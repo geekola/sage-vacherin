@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Share2, Trash2, Image as ImageIcon, Video, QrCode, Play, Check } from 'lucide-react';
+import { Share2, Trash2, Image as ImageIcon, QrCode, Play, Check } from 'lucide-react';
 import { QRCodeDialog } from './QRCodeDialog';
 import { SimulationDialog } from './SimulationDialog';
 import { useARStore } from '../store/arStore';
@@ -91,16 +91,7 @@ export const CampaignList = () => {
                     />
                   ) : (
                     <div className="w-12 h-12 rounded bg-gray-100 flex items-center justify-center">
-                      {campaign.type === 'video' ? (
-                        <Video className="w-6 h-6 text-gray-400" />
-                      ) : (
-                        <ImageIcon className="w-6 h-6 text-gray-400" />
-                      )}
-                    </div>
-                  )}
-                  {campaign.videoUrl && (
-                    <div className="absolute -top-1 -right-1 bg-blue-500 rounded-full p-1">
-                      <Video className="w-3 h-3 text-white" />
+                      <ImageIcon className="w-6 h-6 text-gray-400" />
                     </div>
                   )}
                 </div>

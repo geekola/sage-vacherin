@@ -3,7 +3,7 @@ import { useARStore } from '../../store/arStore';
 import { useAuth } from '../../hooks/useAuth';
 import { QRCodeDialog } from '../QRCodeDialog';
 import { SimulationDialog } from '../SimulationDialog';
-import { QrCode, Play, Eye, Calendar, Clock, Video, Image as ImageIcon } from 'lucide-react';
+import { QrCode, Play, Eye, Calendar, Clock } from 'lucide-react';
 
 export const ViewARExperiences: React.FC = () => {
   const { user } = useAuth();
@@ -116,18 +116,6 @@ export const ViewARExperiences: React.FC = () => {
                     <span>Preview</span>
                   </button>
                 </div>
-              </div>
-              <div className="absolute top-4 right-4 flex space-x-2">
-                {campaign.videoUrl && (
-                  <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded-md flex items-center space-x-1">
-                    <Video className="w-3 h-3" />
-                    <span>Video</span>
-                  </span>
-                )}
-                <span className="px-2 py-1 bg-green-600 text-white text-xs rounded-md flex items-center space-x-1">
-                  <ImageIcon className="w-3 h-3" />
-                  <span>Marker</span>
-                </span>
               </div>
             </div>
 
