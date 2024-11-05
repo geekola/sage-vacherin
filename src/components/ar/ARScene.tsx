@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera } from '@react-three/drei';
 import { ARVideoOverlay } from './ARVideoOverlay';
 import { ARMarkerImage } from './ARMarkerImage';
+import { ARMarkerDetection } from './ARMarkerDetection';
 import { useARStore } from '../../store/arStore';
 
 interface ARSceneProps {
@@ -20,10 +21,11 @@ export const ARScene: React.FC<ARSceneProps> = ({
 }) => {
   const activeCampaign = campaign || useARStore((state) => state.activeCampaign);
   const [showVideo, setShowVideo] = useState(showOverlay || isQRScanned);
+  const [markerDetected, setMarkerDetected] = useState(false);
 
   useEffect(() => {
-    setShowVideo(showOverlay || isQRScanned);
-  }, [showOverlay, isQRScanned]);
+    setShowVideo(showOverlay || isQRScanned || markerDetected);
+  }, [showOverlay, isQRScanned, markerDetected]);
 
   if (!activeCampaign?.markerImage) return null;
 
@@ -38,6 +40,13 @@ export const ARScene: React.FC<ARSceneProps> = ({
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
         
+        {/* Marker detection */}
+        <ARMarkerDetection
+          markerImage={activeCampaign.markerImage}
+          onMarkerFound={() => setMarkerDetected(true)}
+          onMarkerLost={() => setMarkerDetected(false)}
+        />
+
         {/* Only show marker image if video is not playing */}
         {!showVideo && (
           <ARMarkerImage 
@@ -46,7 +55,7 @@ export const ARScene: React.FC<ARSceneProps> = ({
           />
         )}
 
-        {/* Show video when QR is scanned or overlay is enabled */}
+        {/* Show video when marker is detected or overlay is enabled */}
         {activeCampaign.videoUrl && showVideo && (
           <ARVideoOverlay
             videoUrl={activeCampaign.videoUrl}
