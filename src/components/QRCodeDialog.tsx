@@ -16,13 +16,9 @@ export const QRCodeDialog: React.FC<QRCodeDialogProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  // Create a shareable QR code that contains the campaign data
-  const qrData = JSON.stringify({
-    id: campaign.id,
-    markerImage: campaign.markerImage,
-    videoUrl: campaign.videoUrl
-  });
-
+  // Create a direct video overlay URL
+  const overlayUrl = `${window.location.origin}/ar/${campaign.id}/overlay`;
+  
   const handleDownload = () => {
     const svg = document.getElementById('campaign-qr');
     if (!svg) return;
@@ -63,7 +59,7 @@ export const QRCodeDialog: React.FC<QRCodeDialogProps> = ({
         <div className="bg-white p-4 rounded-lg flex items-center justify-center">
           <QRCodeSVG
             id="campaign-qr"
-            value={qrData}
+            value={overlayUrl}
             size={200}
             level="H"
             includeMargin
@@ -75,7 +71,7 @@ export const QRCodeDialog: React.FC<QRCodeDialogProps> = ({
           <div className="text-sm text-blue-700">
             <p className="font-medium mb-1">How to use:</p>
             <ol className="list-decimal ml-4 space-y-1">
-              <li>Download or scan this QR code</li>
+              <li>Scan this QR code with your mobile device</li>
               <li>Point your camera at the marker image</li>
               <li>The AR video will automatically play</li>
             </ol>
